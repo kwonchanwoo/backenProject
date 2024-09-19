@@ -25,10 +25,9 @@ public class SecurityContextHelper {
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
     }
 
-    public static boolean isAuthorizedForMember(Member member){
+    public static void isAuthorizedForMember(Member member){
         if(!isAdmin() && !getPrincipal().equals(member)){
             throw new CommonException(ErrorCode.TOKEN_ACCESS_DENIED);
         }
-        return true;
     }
 }
