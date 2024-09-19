@@ -1,18 +1,21 @@
 package com.example.module.api.member.service;
 
 import com.example.module.api.member.dto.request.RequestMemberDto;
+import com.example.module.api.member.dto.response.ResponseMemberDto;
 import com.example.module.entity.Member;
-import com.example.module.repository.MemberRepository;
+import com.example.module.repository.member.MemberRepository;
 import com.example.module.repository.TokenRepository;
 import com.example.module.util.CommonException;
 import com.example.module.util._Enum.ErrorCode;
-import com.example.module.util.security.JwtTokenProvider;
 import com.example.module.util.security.SecurityContextHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -49,6 +52,16 @@ public class MemberService {
         SecurityContextHelper.isAuthorizedForMember(member);
 
         tokenRepository.deleteByTokenKey(member.getEmail());
+    }
+
+    public Page<ResponseMemberDto> getMemberList(HashMap<String, Object> filters, Pageable pageable) {
+        return memberRepository.getMemberList(filters, pageable);
+    }
+
+    public void duplicateCheck(String email) {
+        if(memberRepository.findByEmail(email).isPresent()){
+            throw new CommonException(ErrorCode.MEMBER_DUPLICATED);
+        }
     }
 
 //    private String resolveToken(String accessToken) {

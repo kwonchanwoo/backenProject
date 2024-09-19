@@ -1,5 +1,6 @@
 package com.example.module.api.member.dto.request;
 
+import com.example.module.entity.Member;
 import com.example.module.util._Enum.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,4 +32,12 @@ public class RequestMemberDto {
     private int age;
     @Pattern(regexp = "^01[0-9]{1}-[0-9]{4}-[0-9]{4}$", message = "전화번호 형식이 안맞습니다. (xxx-xxxx-xxxx)")
     private String phoneNumber;
+
+    public RequestMemberDto(Member member) {
+        this.name = member.getName();
+        this.email = member.getEmail();
+        this.password = member.getPassword();
+        this.age = member.getAge();
+        this.phoneNumber = member.getPhoneNumber();
+    }
 }

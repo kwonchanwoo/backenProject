@@ -1,20 +1,15 @@
 package com.example.module.entity;
 
 import com.example.module.util.BaseEntity;
-
 import com.example.module.util._Enum.Gender;
-
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
 import javax.persistence.*;
 import java.util.ArrayList;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,5 +70,4 @@ public class Member extends BaseEntity implements UserDetails {
     private int age;
 
     private String phoneNumber;
-
 }

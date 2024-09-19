@@ -55,6 +55,7 @@ public class SecurityConfig {
         return (web) -> web.ignoring()
                 .antMatchers(
                         "/members/join",
+                        "/members/duplicate_check",
                         "/authorize/login",
                         "/authorize/refresh-token"
                 );

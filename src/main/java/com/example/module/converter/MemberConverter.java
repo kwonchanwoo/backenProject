@@ -1,7 +1,7 @@
 package com.example.module.converter;
 
 import com.example.module.entity.Member;
-import com.example.module.repository.MemberRepository;
+import com.example.module.repository.member.MemberRepository;
 import com.example.module.util.CommonException;
 import com.example.module.util._Enum.ErrorCode;
 import com.fasterxml.jackson.databind.JavaType;

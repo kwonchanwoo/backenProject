@@ -5,7 +5,7 @@ import com.example.module.api.authorize.dto.request.RequestLoginDto;
 import com.example.module.api.authorize.dto.response.TokenInfo;
 import com.example.module.entity.Member;
 import com.example.module.entity.Token;
-import com.example.module.repository.MemberRepository;
+import com.example.module.repository.member.MemberRepository;
 import com.example.module.repository.TokenRepository;
 import com.example.module.util.CommonException;
 import com.example.module.util._Enum.ErrorCode;
