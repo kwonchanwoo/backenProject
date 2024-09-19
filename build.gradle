@@ -2,6 +2,9 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.5.3'
 	id 'io.spring.dependency-management' version '1.1.6'
+
+	//querydsl 추가
+	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.privacy'
@@ -43,8 +46,29 @@ dependencies {
 
 	// 제약조건 검증 관련
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	//querydsl 추가
+	implementation 'com.querydsl:querydsl-jpa'
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+//querydsl 추가 시작
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
+sourceSets {
+	main.java.srcDir querydslDir
+}
+configurations {
+	querydsl.extendsFrom compileClasspath
+}
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
+}
+//querydsl 추가 끝
