@@ -50,6 +50,6 @@ public class MemberController {
     @PostMapping("/duplicate_check")
     @ResponseStatus(HttpStatus.OK)
     public void duplicateCheck(@Valid @RequestBody RequestDuplicateCheckDto duplicateCheckDto){
-        memberService.duplicateCheck(duplicateCheckDto.getEmail());
+        memberService.duplicateCheck(duplicateCheckDto.getId());
     }
 }

@@ -18,6 +18,8 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestMemberDto {
+    @NotBlank(message = "아이디를 입력해 주세요.")
+    private String userId;
     @NotBlank(message = "이름을 입력해 주세요.")
     private String name;
     @Email(message = "이메일 형식이 올바르지 않습니다.")
@@ -34,6 +36,7 @@ public class RequestMemberDto {
     private String phoneNumber;
 
     public RequestMemberDto(Member member) {
+        this.userId = member.getUserId();
         this.name = member.getName();
         this.email = member.getEmail();
         this.password = member.getPassword();

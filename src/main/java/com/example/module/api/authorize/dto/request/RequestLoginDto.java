@@ -13,8 +13,8 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestLoginDto {
-    @Email(message = "이메일 형식이 올바르지 않습니다.")
-    private String email;
+    @NotBlank(message = "아이디를 입력 해주세요.")
+    private String userId;
     @NotBlank(message = "비밀번호를 입력 해주세요.")
     private String password;
 }

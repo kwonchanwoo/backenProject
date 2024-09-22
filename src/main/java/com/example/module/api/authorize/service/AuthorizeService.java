@@ -44,7 +44,7 @@ public class AuthorizeService implements UserDetailsService {
     public TokenInfo login(RequestLoginDto loginDto) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(
-                        loginDto.getEmail(),
+                        loginDto.getUserId(),
                         loginDto.getPassword()
                 );
         Authentication authentication = authenticate.getObject().authenticate(authenticationToken);
@@ -67,8 +67,8 @@ public class AuthorizeService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return memberRepository.findByEmail(email)
+    public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+        return memberRepository.findByUserId(id)
                 // 접속한 유저의 권한이 User(일반회원) 일때, 계정이 삭제됫는지 체크
                 .filter(Member::isEnabled)
                 .map(this::createUserDetails)
@@ -115,7 +115,7 @@ public class AuthorizeService implements UserDetailsService {
             throw new CommonException(ErrorCode.ACCESS_DENIED);
         }
 
-        List<Token> oldTokenList = tokenRepository.findByTokenKey(SecurityContextHelper.getPrincipal().getEmail());
+        List<Token> oldTokenList = tokenRepository.findByTokenKey(SecurityContextHelper.getPrincipal().getUserId());
         if ((long) oldTokenList.size() > 0) {
             oldTokenList.forEach(refreshToken -> refreshToken.setDeleted(true));
         }

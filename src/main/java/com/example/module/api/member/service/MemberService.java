@@ -29,12 +29,13 @@ public class MemberService {
 
     @Transactional
     public void join(RequestMemberDto memberCreateDto) {
-        memberRepository.findByEmail(memberCreateDto.getEmail())
+        memberRepository.findByUserId(memberCreateDto.getUserId())
                 .ifPresent((member -> {
                     throw new CommonException(ErrorCode.MEMBER_DUPLICATED);
                 }));
         memberRepository.save(
                 Member.builder()
+                        .userId(memberCreateDto.getUserId())
                         .name(memberCreateDto.getName())
                         .email(memberCreateDto.getEmail())
                         .password(passwordEncoder.encode(memberCreateDto.getPassword()))
@@ -51,15 +52,15 @@ public class MemberService {
         // 관리자/일반유저 구분
         SecurityContextHelper.isAuthorizedForMember(member);
 
-        tokenRepository.deleteByTokenKey(member.getEmail());
+        tokenRepository.deleteByTokenKey(member.getUserId());
     }
 
     public Page<ResponseMemberDto> getMemberList(HashMap<String, Object> filters, Pageable pageable) {
         return memberRepository.getMemberList(filters, pageable);
     }
 
-    public void duplicateCheck(String email) {
-        if(memberRepository.findByEmail(email).isPresent()){
+    public void duplicateCheck(String id) {
+        if(memberRepository.findByUserId(id).isPresent()){
             throw new CommonException(ErrorCode.MEMBER_DUPLICATED);
         }
     }

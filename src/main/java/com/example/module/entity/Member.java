@@ -21,9 +21,11 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @SuperBuilder
 public class Member extends BaseEntity implements UserDetails {
+    @Column(unique = true, nullable = false)
+    private String userId;
     private String name;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)

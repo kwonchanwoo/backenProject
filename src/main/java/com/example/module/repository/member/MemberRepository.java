@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberCustomRepository{
-    Optional<Member> findByEmail(String email);
-
+    Optional<Member> findByUserId(String userId);
+        
     Page<ResponseMemberDto> getMemberList(Map<String, Object> filters, Pageable pageable);
 }

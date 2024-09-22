@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseMemberDto {
+    private String id;
     private String email;
     private String name;
     private Gender sex;
@@ -16,6 +17,7 @@ public class ResponseMemberDto {
     private String phoneNumber;
 
     public ResponseMemberDto(Member member) {
+        this.id = member.getUserId();
         this.email = member.getEmail();
         this.name = member.getName();
         this.sex = member.getSex();

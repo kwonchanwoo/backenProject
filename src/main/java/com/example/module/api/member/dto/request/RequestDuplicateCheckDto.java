@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.Email;
 
@@ -12,6 +13,5 @@ import javax.validation.constraints.Email;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestDuplicateCheckDto {
-    @Email(message = "이메일 형식이 올바르지 않습니다.")
-    private String email;
+    private String id;
 }
