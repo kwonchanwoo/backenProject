@@ -18,7 +18,7 @@ public class ResponseFileDto {
     private long size;
 
     public ResponseFileDto(File file) {
-        this.fileName = file.getName();
+        this.fileName = file.getOriginName();
         this.description = file.getDescription();
         this.size = file.getSize();
         this.memberName = file.getMember().getName();
