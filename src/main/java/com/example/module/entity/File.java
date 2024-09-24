@@ -15,15 +15,15 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class File extends BaseEntity {
-    // UUID
+    // 저장된 서버 파일명
     @Column(unique = true, nullable = false)
-    private String uuid;
+    private String storedName;
+    // 사용자 업로드 파일명
+    @Column(nullable = false)
+    private String originName;
     // 파일 경로
     @Column(nullable = false)
     private String path;
-    // 파일명
-    @Column(nullable = false)
-    private String name;
     // 파일 설명
     @Column
     private String description;

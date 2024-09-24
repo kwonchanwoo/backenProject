@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Map;
 
 @Repository
-public interface FileRepository extends JpaRepository<File, Long> {
+public interface FileRepository extends JpaRepository<File, Long>, FileCustomRepository {
     Page<ResponseFileDto> getFileList(Map<String, Object> filters, Pageable pageable);
 }
