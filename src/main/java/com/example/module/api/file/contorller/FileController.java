@@ -1,5 +1,6 @@
 package com.example.module.api.file.contorller;
 
+import com.example.module.api.file.dto.response.ResponseFileCategoryDto;
 import com.example.module.api.file.dto.response.ResponseFileDto;
 import com.example.module.api.file.service.FileService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +23,11 @@ public class FileController {
     @GetMapping
     public Page<ResponseFileDto> getMemberList(@RequestParam(required = false) HashMap<String,Object> filters, Pageable pageable){
         return fileService.getFileList(filters, pageable);
+    }
+
+    @GetMapping("/fileCategory")
+    public List<ResponseFileCategoryDto> getFileCategoryList(){
+        return fileService.getFileCategoryList();
     }
 
 }

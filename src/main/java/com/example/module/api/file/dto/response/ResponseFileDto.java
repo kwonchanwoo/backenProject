@@ -21,7 +21,7 @@ public class ResponseFileDto {
         this.fileName = file.getOriginName();
         this.description = file.getDescription();
         this.size = file.getSize();
-        this.memberName = file.getMember().getName();
+        this.memberName = file.getCreatedMember().getName();
     }
 
 }

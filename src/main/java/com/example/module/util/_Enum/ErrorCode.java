@@ -32,7 +32,10 @@ public enum ErrorCode {
 
     // enum
     ENUM_GENDER_INVALID(HttpStatus.BAD_REQUEST, 400, "성별을 잘못 입력 하였 습니다."),
-    ENUM_BOARD_CATEGORY_INVALID(HttpStatus.BAD_REQUEST, 400, "게시판 종류를 잘못 입력 하였 습니다.");
+    ENUM_BOARD_CATEGORY_INVALID(HttpStatus.BAD_REQUEST, 400, "게시판 종류를 잘못 입력 하였 습니다."),
+
+    // fileCategory
+    FILE_CATEGORY_DUPLICATED(HttpStatus.CONFLICT,409,"FileCategory is duplicated");
 
     private final HttpStatus httpStatus;
     private final Integer code;

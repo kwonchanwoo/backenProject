@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -31,12 +32,18 @@ public class File extends BaseEntity {
     @Column(nullable = false)
     private long size;
     // 다운로드 횟수
-    @Column
+    @Column(nullable = false)
+    @ColumnDefault("0")
     private int downloadCnt = 0;
 
     // foreign key for member table
     @ManyToOne
     @JoinColumn(name="member_id")
     private Member member;
+
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn(name = "file_category_id")
+    private FileCategory fileCategory;
 
 }

@@ -77,6 +77,7 @@ public class SecurityConfig {
 //                        "/authorize/login",
 //                        "/authorize/refresh-token"
 //                ).permitAll()
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().hasRole("USER")
                 .and()
                 .exceptionHandling()

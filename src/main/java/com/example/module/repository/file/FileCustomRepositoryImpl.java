@@ -1,6 +1,7 @@
 package com.example.module.repository.file;
 
 import com.example.module.api.file.dto.response.ResponseFileDto;
+import com.example.module.entity.QMember;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,9 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
         public Page<ResponseFileDto> getFileList(Map<String, Object> filters, Pageable pageable) {
 
             List<ResponseFileDto> list = jpaQueryFactory.
-                    selectFrom(file)
+                    select(file)
+                    .from(file)
+                    .leftJoin(file.createdMember, QMember.member)
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch()
