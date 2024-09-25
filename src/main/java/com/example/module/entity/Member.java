@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 public class Member extends BaseEntity implements UserDetails {
     @Column(unique = true, nullable = false)
     private String userId;
+
+    @Column
     private String name;
 
     @Column(nullable = false)
@@ -44,7 +46,7 @@ public class Member extends BaseEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.email;
+        return this.userId;
     }
 
     @Override

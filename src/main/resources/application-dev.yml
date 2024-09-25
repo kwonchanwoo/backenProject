@@ -14,6 +14,7 @@ spring:
         order_by:
           default_null_ordering: last
         format_sql: true
+        default_batch_fetch_size: 100
   datasource:
     url: jdbc:mariadb://13.60.217.70:3306/project
     driver-class-name: org.mariadb.jdbc.Driver
