@@ -2,6 +2,11 @@ spring:
   config:
     activate:
       on-profile: dev
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 100MB
+      location: /Users/giraf/files
   jpa:
     database: MYSQL
     generate-ddl: true

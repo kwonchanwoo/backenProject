@@ -35,7 +35,21 @@ public enum ErrorCode {
     ENUM_BOARD_CATEGORY_INVALID(HttpStatus.BAD_REQUEST, 400, "게시판 종류를 잘못 입력 하였 습니다."),
 
     // fileCategory
-    FILE_CATEGORY_DUPLICATED(HttpStatus.CONFLICT,409,"FileCategory is duplicated");
+    FILE_CATEGORY_DUPLICATED(HttpStatus.CONFLICT,409,"FileCategory is duplicated"),
+    FILE_CATEGORY_NOT_EXISTS(HttpStatus.BAD_REQUEST,400,"FileCategory is not exists"),
+
+    /**
+     * 파일 관련
+     */
+    FILE_NOT_FOUND(HttpStatus.PRECONDITION_FAILED, 412,"파일이 전달되지 않았습니다."),
+    FILE_EMPTY(HttpStatus.BAD_REQUEST,400,"파일을 선택해주세요."),
+    FILE_TYPE_INVALID(HttpStatus.BAD_REQUEST,400, "파일 타입이 맞지 않습니다."),
+    FILE_NOT_NULL(HttpStatus.BAD_REQUEST, 400,"파일 ID 값이 잘못되었습니다."),
+    FILE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, 400,"허용되는 파일 크기를 벗어났습니다. (동영상 최대 1GB, 이미지는 50MB)"),
+    FILE_TEMPLATE_IMAGE_SIZE_EXCEED(HttpStatus.BAD_REQUEST,400, "템플릿 이미지 크기는 최대 1080X1920입니다."),
+    FILE_EXTENSION_INVALID(HttpStatus.BAD_REQUEST,400, "파일 형식이 맞지 않습니다."),
+    FILE_UPLOAD_FAIL(HttpStatus.BAD_REQUEST,400,"파일 업로드에 실패하였습니다."),
+    EMPTY_FILE_NAME(HttpStatus.BAD_REQUEST,400,"파일 이름을 확인해주세요.");
 
     private final HttpStatus httpStatus;
     private final Integer code;

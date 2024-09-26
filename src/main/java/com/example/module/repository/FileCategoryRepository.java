@@ -8,7 +8,9 @@ import java.util.Optional;
 
 public interface FileCategoryRepository extends JpaRepository<FileCategory, Long> {
 
+
+    Optional<FileCategory> findByNameAndIsEnabled(String name, boolean isEnabled);
+
     Optional<FileCategory> findByName(String name);
 
-    List<FileCategory> findByIsEnabled(boolean isEnabled);
 }

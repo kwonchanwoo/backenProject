@@ -2,12 +2,17 @@ spring:
   config:
     activate:
       on-profile: local
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 100MB
+      location: /C:\\Users/giraf/files
   jpa:
     database: MYSQL
     generate-ddl: true
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     #   콘솔창에 쿼리문 정렬되어 보이게 하는 설정
     properties:
       hibernate:

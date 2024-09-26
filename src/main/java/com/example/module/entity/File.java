@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 public class File extends BaseEntity {
     // 저장된 서버 파일명
     @Column(unique = true, nullable = false)
@@ -36,11 +38,11 @@ public class File extends BaseEntity {
     @ColumnDefault("0")
     private int downloadCnt = 0;
 
-    // foreign key for member table
-    @ManyToOne
-    @JoinColumn(name="member_id")
-    private Member member;
+    @Column(columnDefinition = "varchar(30) not null comment 'mime 타입'")
+    private String mime;
 
+    @Column(columnDefinition = "varchar(10) NOT NULL COMMENT '파일 확장자'")
+    private String extension;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "file_category_id")
