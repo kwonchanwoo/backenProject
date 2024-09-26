@@ -13,7 +13,7 @@ public class AdminController {
 
     @PostMapping("/fileCategory/{fileCategory}")
     @ResponseStatus(HttpStatus.OK)
-    public void addFileCategory(@PathVariable String fileCategory) {
-        adminService.addFileCatregory(fileCategory);
+    public void postFileCategory(@PathVariable String fileCategory) {
+        adminService.postFileCategory(fileCategory);
     }
 }

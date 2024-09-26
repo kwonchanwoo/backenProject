@@ -14,7 +14,7 @@ import java.util.Optional;
 public class AdminService {
     private final FileCategoryRepository fileCategoryRepository;
 
-    public void addFileCatregory(String fileCategory) {
+    public void postFileCategory(String fileCategory) {
         // 파일 카테고리 중복 체크
         if(fileCategoryRepository.findByName(fileCategory).isPresent()){
             throw new CommonException(ErrorCode.FILE_CATEGORY_DUPLICATED);
