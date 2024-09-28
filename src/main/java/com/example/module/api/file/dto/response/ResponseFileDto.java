@@ -12,12 +12,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseFileDto {
+    private Long id;
     private String fileName;
     private String description;
     private String memberName;
     private long size;
 
     public ResponseFileDto(File file) {
+        this.id = file.getId();
         this.fileName = file.getOriginName();
         this.description = file.getDescription();
         this.size = file.getSize();

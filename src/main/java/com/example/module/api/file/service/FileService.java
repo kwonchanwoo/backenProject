@@ -9,14 +9,22 @@ import com.example.module.util.CommonException;
 import com.example.module.util._Enum.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -41,7 +49,7 @@ public class FileService {
                 .collect(Collectors.toList());
     }
 
-    public ResponseEntity<List<Long>> postFilesUpload(String fileCategoryStr, List<MultipartFile> files) {
+    public ResponseEntity<List<Long>> fileUpload(String fileCategoryStr, List<MultipartFile> files) {
 
         // 파일 카테고리 체크
         FileCategory fileCategory  = fileCategoryRepository
@@ -80,15 +88,24 @@ public class FileService {
 
         List<Long> resultFileId = new ArrayList<>();
 
-        File finalFileDirectory = fileDirectory;
         files.forEach(file -> {
             String mimeType = file.getContentType();
-            String originalFileName = file.getOriginalFilename();
-            String extension = StringUtils.getFilenameExtension(originalFileName);
-            File newFileName = new File(finalFileDirectory.getPath(), UUID.randomUUID() + "-" + file.getOriginalFilename());
+
+            String originalFileName;
+
+            if (Objects.requireNonNull(file.getOriginalFilename(),"fileName not null or empty").lastIndexOf(".") != -1) {
+                originalFileName = file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf("."));
+            } else {
+                // 확장자가 없는 경우 파일 이름 전체를 그대로 사용
+                originalFileName = file.getOriginalFilename();
+            }
+
+
+            String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+            File newFileName = new File(fileDirectory.getPath(), UUID.randomUUID() + "-" + file.getOriginalFilename());
 
             try {
-                if (finalFileDirectory.mkdirs()) {
+                if (fileDirectory.mkdirs()) {
                     file.transferTo(newFileName);
                     resultFileId.add(
                             fileRepository.save(
@@ -96,7 +113,7 @@ public class FileService {
                                             .storedName(newFileName.getName())
                                             .originName(originalFileName)
                                             .mime(mimeType)
-                                            .path(finalFileDirectory.getPath())
+                                            .path(fileDirectory.getPath())
                                             .extension(extension)
                                             .size(file.getSize())
                                             .fileCategory(fileCategory)
@@ -111,7 +128,7 @@ public class FileService {
                                             .storedName(newFileName.getName())
                                             .originName(originalFileName)
                                             .mime(mimeType)
-                                            .path(finalFileDirectory.getPath())
+                                            .path(fileDirectory.getPath())
                                             .extension(extension)
                                             .size(file.getSize())
                                             .fileCategory(fileCategory)
@@ -125,5 +142,24 @@ public class FileService {
         });
 
         return resultFileId;
+    }
+
+    public ResponseEntity<Resource> fileDownload(com.example.module.entity.File file) {
+        try {
+            // 파일 경로 지정
+            Path filePath = Paths.get(file.getPath()).resolve(file.getStoredName()).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists()) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getOriginName() + "." + file.getExtension() + "\"")
+                        .body(resource);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (MalformedURLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 }

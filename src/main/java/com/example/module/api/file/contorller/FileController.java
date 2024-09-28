@@ -3,7 +3,9 @@ package com.example.module.api.file.contorller;
 import com.example.module.api.file.dto.response.ResponseFileCategoryDto;
 import com.example.module.api.file.dto.response.ResponseFileDto;
 import com.example.module.api.file.service.FileService;
+import com.example.module.entity.File;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -29,13 +31,16 @@ public class FileController {
         return fileService.getFileCategoryList();
     }
 
-    @PostMapping("")
-    public ResponseEntity<List<Long>> postFilesUpload(
+    @PostMapping("/upload")
+    public ResponseEntity<List<Long>> fileUpload(
             @RequestParam(name = "file_category") String fileCategoryStr,
             @RequestParam(name = "files") List<MultipartFile> files
     ) {
-        return fileService.postFilesUpload(fileCategoryStr, files);
+        return fileService.fileUpload(fileCategoryStr, files);
     }
 
-
+    @GetMapping("/download")
+    public ResponseEntity<Resource> fileDownload(@RequestParam(name = "file") File file){
+        return fileService.fileDownload(file);
+    }
 }
