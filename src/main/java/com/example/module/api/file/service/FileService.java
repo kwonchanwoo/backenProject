@@ -1,5 +1,6 @@
 package com.example.module.api.file.service;
 
+import com.example.module.api.file.dto.request.RequestFileIdDto;
 import com.example.module.api.file.dto.response.ResponseFileCategoryDto;
 import com.example.module.api.file.dto.response.ResponseFileDto;
 import com.example.module.entity.FileCategory;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FileService {
     private final FileRepository fileRepository;
     private final FileCategoryRepository fileCategoryRepository;
@@ -52,7 +55,7 @@ public class FileService {
     public ResponseEntity<List<Long>> fileUpload(String fileCategoryStr, List<MultipartFile> files) {
 
         // 파일 카테고리 체크
-        FileCategory fileCategory  = fileCategoryRepository
+        FileCategory fileCategory = fileCategoryRepository
                 .findByNameAndIsEnabled(fileCategoryStr, true)
                 .orElseThrow(() -> new CommonException(ErrorCode.FILE_CATEGORY_NOT_EXISTS));
 
@@ -91,15 +94,6 @@ public class FileService {
         files.forEach(file -> {
             String mimeType = file.getContentType();
 
-            String originalFileName;
-
-            if (Objects.requireNonNull(file.getOriginalFilename(),"fileName not null or empty").lastIndexOf(".") != -1) {
-                originalFileName = file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf("."));
-            } else {
-                // 확장자가 없는 경우 파일 이름 전체를 그대로 사용
-                originalFileName = file.getOriginalFilename();
-            }
-
 
             String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
             File newFileName = new File(fileDirectory.getPath(), UUID.randomUUID() + "-" + file.getOriginalFilename());
@@ -111,7 +105,7 @@ public class FileService {
                             fileRepository.save(
                                     com.example.module.entity.File.builder()
                                             .storedName(newFileName.getName())
-                                            .originName(originalFileName)
+                                            .originName(file.getOriginalFilename())
                                             .mime(mimeType)
                                             .path(fileDirectory.getPath())
                                             .extension(extension)
@@ -126,7 +120,7 @@ public class FileService {
                             fileRepository.save(
                                     com.example.module.entity.File.builder()
                                             .storedName(newFileName.getName())
-                                            .originName(originalFileName)
+                                            .originName(file.getOriginalFilename())
                                             .mime(mimeType)
                                             .path(fileDirectory.getPath())
                                             .extension(extension)
@@ -153,13 +147,33 @@ public class FileService {
             if (resource.exists()) {
                 return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getOriginName() + "." + file.getExtension() + "\"")
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getOriginName() + "\"")
                         .body(resource);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
         } catch (MalformedURLException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @Transactional
+    public void fileDelete(List<RequestFileIdDto> fileIdList) {
+        List<com.example.module.entity.File> files = fileRepository
+                .findByIdIn(fileIdList.stream()
+                        .map(RequestFileIdDto::getId)
+                        .collect(Collectors.toList()));
+
+        for (com.example.module.entity.File file : files) {
+            File fileDirectory = new File(file.getPath() + File.separator + file.getStoredName());
+            if (fileDirectory.exists()) {
+                boolean isSuccess = fileDirectory.delete();
+
+                if (isSuccess) {
+                    file.setDeleted(true);
+                    fileRepository.save(file);
+                }
+            }
         }
     }
 }

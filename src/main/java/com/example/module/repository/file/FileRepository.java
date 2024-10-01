@@ -7,9 +7,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @Repository
 public interface FileRepository extends JpaRepository<File, Long>, FileCustomRepository {
     Page<ResponseFileDto> getFileList(Map<String, Object> filters, Pageable pageable);
+
+    List<File> findByIdIn(Collection<Long> ids);
+
+
 }

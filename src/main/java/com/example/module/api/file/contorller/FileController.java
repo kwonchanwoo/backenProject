@@ -1,5 +1,6 @@
 package com.example.module.api.file.contorller;
 
+import com.example.module.api.file.dto.request.RequestFileIdDto;
 import com.example.module.api.file.dto.response.ResponseFileCategoryDto;
 import com.example.module.api.file.dto.response.ResponseFileDto;
 import com.example.module.api.file.service.FileService;
@@ -42,5 +43,10 @@ public class FileController {
     @GetMapping("/download")
     public ResponseEntity<Resource> fileDownload(@RequestParam(name = "file") File file){
         return fileService.fileDownload(file);
+    }
+
+    @DeleteMapping
+    public void fileDelete(@RequestBody List<RequestFileIdDto> fileIdList){
+        fileService.fileDelete(fileIdList);
     }
 }
