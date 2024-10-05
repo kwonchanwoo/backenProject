@@ -19,14 +19,14 @@ import static com.example.module.entity.QFileCategoryRole.fileCategoryRole;
 import static com.example.module.entity.QMember.member;
 
 @RequiredArgsConstructor
-public class FileCustomRepositoryImpl implements FileCustomRepository{
-        private final JPAQueryFactory jpaQueryFactory;
+public class FileCustomRepositoryImpl implements FileCustomRepository {
+    private final JPAQueryFactory jpaQueryFactory;
 
-        @Override
-        public Page<ResponseFileDto> getFileList(Map<String, Object> filters, Pageable pageable) {
+    @Override
+    public Page<ResponseFileDto> getFileList(Map<String, Object> filters, Pageable pageable) {
 
-            List<ResponseFileDto> list = jpaQueryFactory.
-                    select(Projections.constructor(
+        List<ResponseFileDto> list = jpaQueryFactory.
+                select(Projections.constructor(
                         ResponseFileDto.class,
                         file.id,
                         file.originName,
@@ -34,26 +34,34 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
                         file.description,
                         member.name,
                         file.size
-                    ))
-                    .from(file)
-                    .join(file.fileCategory,fileCategory)
-                    .join(file.createdMember, member)
-                    .join(fileCategoryRole)
-                    .on(
-                            member.id.eq(fileCategoryRole.fileCategoryRolePK.member.id),
-                            fileCategory.id.eq(fileCategoryRole.fileCategoryRolePK.fileCategory.id)
-                    )
-                    .where(member.userId.eq(SecurityContextHelper.getPrincipal().getUserId()))
-                    .offset(pageable.getOffset())
-                    .limit(pageable.getPageSize())
-                    .fetch();
+                ))
+                .from(file)
+                .join(file.fileCategory, fileCategory)
+                .join(file.createdMember, member)
+                .join(fileCategoryRole)
+                .on(
+                        member.id.eq(fileCategoryRole.fileCategoryRolePK.member.id),
+                        fileCategory.id.eq(fileCategoryRole.fileCategoryRolePK.fileCategory.id)
+                )
+                .where(member.userId.eq(SecurityContextHelper.getPrincipal().getUserId()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-            Long count = Optional.ofNullable(jpaQueryFactory.
-                    select(file.count())
-                    .from(file)
-                    .fetchOne()).orElse(0L);
+        Long count = Optional.ofNullable(jpaQueryFactory.
+                select(file.count())
+                .from(file)
+                .join(file.fileCategory, fileCategory)
+                .join(file.createdMember, member)
+                .join(fileCategoryRole)
+                .on(
+                        member.id.eq(fileCategoryRole.fileCategoryRolePK.member.id),
+                        fileCategory.id.eq(fileCategoryRole.fileCategoryRolePK.fileCategory.id)
+                )
+                .where(member.userId.eq(SecurityContextHelper.getPrincipal().getUserId()))
+                .fetchOne()).orElse(0L);
 
-            return new PageImpl<>(list,pageable,count);
-        }
+        return new PageImpl<>(list, pageable, count);
     }
+}
 
