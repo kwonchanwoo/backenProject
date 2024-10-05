@@ -51,6 +51,13 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
             Long count = Optional.ofNullable(jpaQueryFactory.
                     select(file.count())
                     .from(file)
+                    .join(file.fileCategory,fileCategory)
+                    .join(file.createdMember, member)
+                    .join(fileCategoryRole)
+                    .on(
+                            member.id.eq(fileCategoryRole.fileCategoryRolePK.member.id),
+                            fileCategory.id.eq(fileCategoryRole.fileCategoryRolePK.fileCategory.id)
+                    )
                     .fetchOne()).orElse(0L);
 
             return new PageImpl<>(list,pageable,count);
