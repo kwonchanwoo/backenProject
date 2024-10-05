@@ -17,7 +17,7 @@ public enum ErrorCode {
     ACCESS_DENIED(HttpStatus.FORBIDDEN, 403, "잘못된 접근입니다."), // // 권한이 없다고 표현하면 악용 될수있어서 잘못된 접근으로 처리
 
     // member
-    //    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "Member not found"),
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, 404, "Member not found"),
     MEMBER_DUPLICATED(HttpStatus.CONFLICT, 409, "Member is duplicated"),
 
     // board

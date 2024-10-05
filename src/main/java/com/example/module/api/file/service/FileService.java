@@ -52,6 +52,7 @@ public class FileService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public ResponseEntity<List<Long>> fileUpload(String fileCategoryStr, List<MultipartFile> files) {
 
         // 파일 카테고리 체크
@@ -66,7 +67,7 @@ public class FileService {
 
         validationFile(files);
 
-        return ResponseEntity.ok().body(fileUpload(fileCategory, files));
+        return ResponseEntity.ok().body(upload(fileCategory, files));
     }
 
     private void validationFile(List<MultipartFile> files) {
@@ -85,7 +86,8 @@ public class FileService {
         }
     }
 
-    public List<Long> fileUpload(FileCategory fileCategory, List<MultipartFile> files) {
+    @Transactional
+    public List<Long> upload(FileCategory fileCategory, List<MultipartFile> files) {
         String dateDirectory = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         File fileDirectory = new File(FILE_PATH + File.separator + dateDirectory);
 

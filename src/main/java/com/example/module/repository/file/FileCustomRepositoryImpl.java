@@ -1,7 +1,8 @@
 package com.example.module.repository.file;
 
 import com.example.module.api.file.dto.response.ResponseFileDto;
-import com.example.module.entity.QMember;
+import com.example.module.util.security.SecurityContextHelper;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,9 +12,11 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.example.module.entity.QFile.file;
+import static com.example.module.entity.QFileCategory.fileCategory;
+import static com.example.module.entity.QFileCategoryRole.fileCategoryRole;
+import static com.example.module.entity.QMember.member;
 
 @RequiredArgsConstructor
 public class FileCustomRepositoryImpl implements FileCustomRepository{
@@ -23,15 +26,27 @@ public class FileCustomRepositoryImpl implements FileCustomRepository{
         public Page<ResponseFileDto> getFileList(Map<String, Object> filters, Pageable pageable) {
 
             List<ResponseFileDto> list = jpaQueryFactory.
-                    select(file)
+                    select(Projections.constructor(
+                        ResponseFileDto.class,
+                        file.id,
+                        file.originName,
+                        fileCategory.name,
+                        file.description,
+                        member.name,
+                        file.size
+                    ))
                     .from(file)
-                    .leftJoin(file.createdMember, QMember.member)
+                    .join(file.fileCategory,fileCategory)
+                    .join(file.createdMember, member)
+                    .join(fileCategoryRole)
+                    .on(
+                            member.id.eq(fileCategoryRole.fileCategoryRolePK.member.id),
+                            fileCategory.id.eq(fileCategoryRole.fileCategoryRolePK.fileCategory.id)
+                    )
+                    .where(member.userId.eq(SecurityContextHelper.getPrincipal().getUserId()))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
-                    .fetch()
-                    .stream()
-                    .map(ResponseFileDto::new)
-                    .collect(Collectors.toList());
+                    .fetch();
 
             Long count = Optional.ofNullable(jpaQueryFactory.
                     select(file.count())
