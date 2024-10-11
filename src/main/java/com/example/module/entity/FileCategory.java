@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FileCategory extends BaseEntity {
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "fileCategory", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)

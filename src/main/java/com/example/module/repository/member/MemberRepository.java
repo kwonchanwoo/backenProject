@@ -20,5 +20,4 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberCus
     Page<ResponseMemberDto> getMemberList(Map<String, Object> filters, Pageable pageable);
 
     List<Member> findByIdInAndDeletedFalse(Collection<Long> ids);
-
 }

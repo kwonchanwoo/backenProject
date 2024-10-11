@@ -29,9 +29,10 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseEntity<List<Long>> fileUpload(
             @RequestParam(name = "file_category") String fileCategoryStr,
-            @RequestParam(name = "files") List<MultipartFile> files
+            @RequestParam(name = "files") List<MultipartFile> files,
+            @RequestParam(name = "description",required = false) String description
     ) {
-        return fileService.fileUpload(fileCategoryStr, files);
+        return fileService.fileUpload(fileCategoryStr, files,description);
     }
 
     @GetMapping("/download")

@@ -52,7 +52,7 @@ public class FileService {
     }
 
     @Transactional
-    public ResponseEntity<List<Long>> fileUpload(String fileCategoryStr, List<MultipartFile> files) {
+    public ResponseEntity<List<Long>> fileUpload(String fileCategoryStr, List<MultipartFile> files,String description) {
 
         // 파일 카테고리 체크
         FileCategory fileCategory = fileCategoryRepository
@@ -73,7 +73,7 @@ public class FileService {
 
         validationFile(files);
 
-        return ResponseEntity.ok().body(upload(fileCategory, files));
+        return ResponseEntity.ok().body(upload(fileCategory, files,description));
     }
 
     private void validationFile(List<MultipartFile> files) {
@@ -93,7 +93,7 @@ public class FileService {
     }
 
     @Transactional
-    public List<Long> upload(FileCategory fileCategory, List<MultipartFile> files) {
+    public List<Long> upload(FileCategory fileCategory, List<MultipartFile> files,String description) {
         String dateDirectory = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         File fileDirectory = new File(FILE_PATH + File.separator + dateDirectory);
 
@@ -119,6 +119,7 @@ public class FileService {
                                             .extension(extension)
                                             .size(file.getSize())
                                             .fileCategory(fileCategory)
+                                            .description(description)
                                             .build()
                             ).getId()
                     );
@@ -134,6 +135,7 @@ public class FileService {
                                             .extension(extension)
                                             .size(file.getSize())
                                             .fileCategory(fileCategory)
+                                            .description(description)
                                             .build()
                             ).getId()
                     );

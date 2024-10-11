@@ -1,6 +1,9 @@
 package com.example.module.repository.member;
 
+import com.example.module.api.file_category.dto.response.ResponseFileCategoryMemberDto;
 import com.example.module.api.member.dto.response.ResponseMemberDto;
+import com.example.module.entity.FileCategory;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,5 +40,19 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
                 .fetchOne()).orElse(0L);
 
         return new PageImpl<>(list,pageable,count);
+    }
+
+    @Override
+    public Page<ResponseFileCategoryMemberDto> getFileCategoryMemberList(FileCategory fileCategory,Map<String, Object> filters, Pageable pageable) {
+//        jpaQueryFactory.select(Projections.(
+//                ResponseFileCategoryMemberDto.class,
+//                member.id,
+//                member.userId,
+//                member.name,
+//                member.email,
+//                member.sex,
+//
+//        ))
+        return null;
     }
 }

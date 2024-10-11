@@ -30,7 +30,7 @@ public class AdminService {
     @Transactional
     public void postFileCategory(String fileCategoryName) {
         // 파일 카테고리 중복 체크
-        if (fileCategoryRepository.findByName(fileCategoryName).isPresent()) {
+        if (fileCategoryRepository.findByNameAndDeletedFalse(fileCategoryName).isPresent()) {
             throw new CommonException(ErrorCode.FILE_CATEGORY_DUPLICATED);
         }
         fileCategoryRepository.save(

@@ -71,9 +71,9 @@ public class FileCustomRepositoryImpl implements FileCustomRepository {
 
         if(!SecurityContextHelper.isAdmin()) { // 일반회원 체크
             builder.and(member.userId.eq(SecurityContextHelper.getPrincipal().getUserId())); // 본인이 등록한 파일만 조회
-            builder.and(file.deleted.isFalse()).and(fileCategory.deleted.isFalse()).and(fileCategoryRole.deleted.isFalse());// 파일 권한 여부 체크
+            builder.and(fileCategoryRole.deleted.isFalse());// 파일 권한 여부 체크
         }
-        return builder;
+        return builder.and(file.deleted.isFalse()).and(fileCategory.deleted.isFalse());
     }
 }
 
