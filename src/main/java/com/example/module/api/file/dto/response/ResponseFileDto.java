@@ -15,6 +15,7 @@ public class ResponseFileDto {
     private String fileCategory;
     private String description;
     private String memberName;
+    private String userId;
     private long size;
 
 }

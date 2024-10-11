@@ -1,7 +1,6 @@
-package com.example.module.api.file.contorller;
+package com.example.module.api.file.controller;
 
 import com.example.module.api.file.dto.request.RequestFileIdDto;
-import com.example.module.api.file.dto.response.ResponseFileCategoryDto;
 import com.example.module.api.file.dto.response.ResponseFileDto;
 import com.example.module.api.file.service.FileService;
 import com.example.module.entity.File;
@@ -23,13 +22,8 @@ public class FileController {
     private final FileService fileService;
 
     @GetMapping
-    public Page<ResponseFileDto> getMemberList(@RequestParam(required = false) HashMap<String,Object> filters, Pageable pageable){
+    public Page<ResponseFileDto> getFileList(@RequestParam(required = false) HashMap<String,Object> filters, Pageable pageable){
         return fileService.getFileList(filters, pageable);
-    }
-
-    @GetMapping("/fileCategory")
-    public List<ResponseFileCategoryDto> getFileCategoryList(){
-        return fileService.getFileCategoryList();
     }
 
     @PostMapping("/upload")

@@ -38,11 +38,15 @@ public enum ErrorCode {
     FILE_CATEGORY_DUPLICATED(HttpStatus.CONFLICT,409,"FileCategory is duplicated"),
     FILE_CATEGORY_NOT_EXISTS(HttpStatus.BAD_REQUEST,400,"FileCategory is not exists"),
 
+    // fileCategoryRole
+    FILE_CATEGORY_ROLE_NOT_EXISTS(HttpStatus.FORBIDDEN,403 ,"해당 파일 메뉴에 대한 권한이 없습니다."),
+
     /**
      * 파일 관련
      */
     FILE_NOT_FOUND(HttpStatus.PRECONDITION_FAILED, 412,"파일이 전달되지 않았습니다."),
     FILE_EMPTY(HttpStatus.BAD_REQUEST,400,"파일을 선택해주세요."),
+    FILE_NOT_EMPTY(HttpStatus.BAD_REQUEST,400,"하위 파일들이 존재합니다 해당 파일을 삭제해주세요."),
     FILE_TYPE_INVALID(HttpStatus.BAD_REQUEST,400, "파일 타입이 맞지 않습니다."),
     FILE_NOT_NULL(HttpStatus.BAD_REQUEST, 400,"파일 ID 값이 잘못되었습니다."),
     FILE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, 400,"허용되는 파일 크기를 벗어났습니다. (동영상 최대 1GB, 이미지는 50MB)"),

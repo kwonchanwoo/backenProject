@@ -1,13 +1,15 @@
 package com.example.module.api.file.service;
 
 import com.example.module.api.file.dto.request.RequestFileIdDto;
-import com.example.module.api.file.dto.response.ResponseFileCategoryDto;
 import com.example.module.api.file.dto.response.ResponseFileDto;
 import com.example.module.entity.FileCategory;
-import com.example.module.repository.FileCategoryRepository;
+import com.example.module.repository.FileCategoryRoleRepository;
 import com.example.module.repository.file.FileRepository;
+import com.example.module.repository.file_category.FileCategoryRepository;
 import com.example.module.util.CommonException;
 import com.example.module.util._Enum.ErrorCode;
+import com.example.module.util.dto.FileCategoryRolePK;
+import com.example.module.util.security.SecurityContextHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -29,7 +31,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,16 +45,10 @@ public class FileService {
     private final FileCategoryRepository fileCategoryRepository;
     @Value("${spring.servlet.multipart.location}")
     private String FILE_PATH;
+    private final FileCategoryRoleRepository fileCategoryRoleRepository;
 
     public Page<ResponseFileDto> getFileList(HashMap<String, Object> filters, Pageable pageable) {
         return fileRepository.getFileList(filters, pageable);
-    }
-
-    public List<ResponseFileCategoryDto> getFileCategoryList() {
-        return fileCategoryRepository.findAll()
-                .stream()
-                .map(ResponseFileCategoryDto::new)
-                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -57,8 +56,15 @@ public class FileService {
 
         // 파일 카테고리 체크
         FileCategory fileCategory = fileCategoryRepository
-                .findByNameAndIsEnabled(fileCategoryStr, true)
+                .findByNameAndDeletedFalse(fileCategoryStr)
                 .orElseThrow(() -> new CommonException(ErrorCode.FILE_CATEGORY_NOT_EXISTS));
+
+        // 파일 카테고리 권한 체크(일반유저)
+        if (!SecurityContextHelper.isAdmin()) {
+            fileCategoryRoleRepository
+                    .findById(new FileCategoryRolePK(SecurityContextHelper.getPrincipal(), fileCategory))
+                    .orElseThrow(() -> new CommonException(ErrorCode.FILE_CATEGORY_ROLE_NOT_EXISTS));
+        }
 
         // 파일이있는지 체크
         if (files.isEmpty()) {

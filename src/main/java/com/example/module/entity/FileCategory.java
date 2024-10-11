@@ -21,10 +21,6 @@ public class FileCategory extends BaseEntity {
     @Column(nullable = false,unique = true)
     private String name;
 
-    @Column(name = "enabled", columnDefinition = "bit(1) NOT NULL DEFAULT 1")
-    @Builder.Default // @Builder 사용시 default 설정을할 때, 필요
-    private boolean isEnabled = true;
-
     @OneToMany(mappedBy = "fileCategory", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<File> files = new ArrayList<>();
 
