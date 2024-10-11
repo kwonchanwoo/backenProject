@@ -21,16 +21,27 @@ public class FileCategoryController {
     private final FileCategoryService fileCategoryService;
     private final MemberRepository memberRepository;
 
+    /**
+     * 파일 카테고리 목록
+     *
+     *
+     */
     @GetMapping
     public List<ResponseFileCategoryDto> getFileCategoryList(){
         return fileCategoryService.getFileCategoryList();
     }
 
-    @GetMapping("/{fileCategory}/members")
-    public Page<ResponseFileCategoryMemberDto> getFileCategoryMemberList(
-            @PathVariable(name = "fileCategory") FileCategory fileCategory,
-            @RequestParam(required = false) Map<String,Object> filters, Pageable pageable){
-        return memberRepository.getFileCategoryMemberList(fileCategory,filters, pageable);
+    /**
+         * 파일 카테고리 접근 회원 목록
+         * @param fileCategory
+         * @param filters
+         * @param pageable
+         * @return
+         */
+        @GetMapping("/{fileCategory}/members")
+        public Page<ResponseFileCategoryMemberDto> getFileCategoryMemberList(
+                @PathVariable(name = "fileCategory") FileCategory fileCategory,
+                @RequestParam(required = false) Map<String,Object> filters, Pageable pageable){
+            return memberRepository.getFileCategoryMemberList(fileCategory,filters, pageable);
     }
-
 }

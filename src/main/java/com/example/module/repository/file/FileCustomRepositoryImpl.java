@@ -26,6 +26,8 @@ public class FileCustomRepositoryImpl implements FileCustomRepository {
     @Override
     public Page<ResponseFileDto> getFileList(Map<String, Object> filters, Pageable pageable) {
 
+        filterSetting(filters);
+
         List<ResponseFileDto> list = jpaQueryFactory.
                 select(Projections.constructor(
                         ResponseFileDto.class,
@@ -64,6 +66,12 @@ public class FileCustomRepositoryImpl implements FileCustomRepository {
                 .fetchOne()).orElse(0L);
 
         return new PageImpl<>(list, pageable, count);
+    }
+
+    private void filterSetting(Map<String, Object> filters) {
+        filters.remove("page");
+        filters.remove("size");
+        filters.remove("sort");
     }
 
     private BooleanBuilder whereClause() {
