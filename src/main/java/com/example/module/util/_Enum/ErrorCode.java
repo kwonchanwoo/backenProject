@@ -53,7 +53,13 @@ public enum ErrorCode {
     FILE_TEMPLATE_IMAGE_SIZE_EXCEED(HttpStatus.BAD_REQUEST,400, "템플릿 이미지 크기는 최대 1080X1920입니다."),
     FILE_EXTENSION_INVALID(HttpStatus.BAD_REQUEST,400, "파일 형식이 맞지 않습니다."),
     FILE_UPLOAD_FAIL(HttpStatus.BAD_REQUEST,400,"파일 업로드에 실패하였습니다."),
-    EMPTY_FILE_NAME(HttpStatus.BAD_REQUEST,400,"파일 이름을 확인해주세요.");
+    EMPTY_FILE_NAME(HttpStatus.BAD_REQUEST,400,"파일 이름을 확인해주세요."),
+
+    /**
+     *  Sort 관련
+     */
+    SORT_KEY_NOT_EXISTS(HttpStatus.BAD_REQUEST,400 ,"정렬 키값이 해당 엔터티에 존재하지않습니다." );
+
 
     private final HttpStatus httpStatus;
     private final Integer code;
