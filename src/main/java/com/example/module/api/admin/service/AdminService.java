@@ -1,6 +1,8 @@
 package com.example.module.api.admin.service;
 
 import com.example.module.api.admin.dto.request.RequestFileCategoryRoleDto;
+import com.example.module.api.admin.dto.request.RequestPatchMemberDto;
+import com.example.module.api.member.dto.request.RequestMemberDto;
 import com.example.module.entity.FileCategory;
 import com.example.module.entity.FileCategoryRole;
 import com.example.module.entity.Member;
@@ -11,6 +13,7 @@ import com.example.module.util.BaseEntity;
 import com.example.module.util.CommonException;
 import com.example.module.util._Enum.ErrorCode;
 import com.example.module.util.dto.FileCategoryRolePK;
+import com.example.module.util.security.SecurityContextHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,5 +90,43 @@ public class AdminService {
 
         fileCategory.setDeleted(true);
         fileCategoryRepository.save(fileCategory);
+    }
+
+    @Transactional
+    public void patchMember(RequestPatchMemberDto requestPatchMemberDto) {
+
+        if (!SecurityContextHelper.isAdmin()) {
+            throw new CommonException(ErrorCode.ACCESS_DENIED);
+        }
+
+        Member member = memberRepository
+                .findByIdAndDeletedFalse(requestPatchMemberDto.getMemberId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        List<String> roles = new ArrayList<>();
+
+        roles.add(requestPatchMemberDto.getRole());
+
+        member.setRoles(roles);
+        memberRepository.save(member);
+    }
+
+    @Transactional
+    public void deleteMember(Long memberId) {
+
+        if (!SecurityContextHelper.isAdmin()) {
+            throw new CommonException(ErrorCode.ACCESS_DENIED);
+        }
+
+        Member member = memberRepository
+                .findByIdAndDeletedFalse(memberId)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+//        if (member.hasRole("ADMIN")) {
+//            throw new CommonException(ErrorCode.ADMIN_CANNOT_DELETE_ADMIN);
+//        }
+        
+        member.setDeleted(true);
+        memberRepository.save(member);
     }
 }

@@ -68,6 +68,11 @@ public class Member extends BaseEntity implements UserDetails {
     public boolean isEnabled() {
         return !this.isDeleted();
     }
+
+    public boolean hasRole(String role) {
+        return roles.contains(role);
+    }
+
     @Enumerated(EnumType.STRING)
     private Gender sex;
 
