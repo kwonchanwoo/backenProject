@@ -1,6 +1,8 @@
 package com.example.module.repository.file;
 
 import com.example.module.api.file.dto.response.ResponseFileDto;
+import com.example.module.util.CommonException;
+import com.example.module.util._Enum.ErrorCode;
 import com.example.module.util.security.SecurityContextHelper;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.*;
@@ -12,6 +14,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +45,9 @@ public class FileCustomRepositoryImpl implements FileCustomRepository {
                         file.description,
                         member.name,
                         member.userId,
-                        file.size
+                        file.size,
+                        file.createdAt,
+                        file.updatedAt
                 ))
                 .from(file)
                 .join(file.fileCategory, fileCategory)
@@ -50,7 +57,7 @@ public class FileCustomRepositoryImpl implements FileCustomRepository {
                         member.id.eq(fileCategoryRole.fileCategoryRolePK.member.id),
                         fileCategory.id.eq(fileCategoryRole.fileCategoryRolePK.fileCategory.id)
                 )
-                .where(whereClause())
+                .where(whereClause(filters))
                 .orderBy(getOrderSpecifiers(pageable.getSort()).toArray(new OrderSpecifier[0]))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -66,7 +73,7 @@ public class FileCustomRepositoryImpl implements FileCustomRepository {
                         member.id.eq(fileCategoryRole.fileCategoryRolePK.member.id),
                         fileCategory.id.eq(fileCategoryRole.fileCategoryRolePK.fileCategory.id)
                 )
-                .where(whereClause())
+                .where(whereClause(filters))
                 .fetchOne()).orElse(0L);
 
         return new PageImpl<>(list, pageable, count);
@@ -87,7 +94,7 @@ public class FileCustomRepositoryImpl implements FileCustomRepository {
     }
 
     private Expression<?> getTarget(String property, PathBuilder<Object> entityPath) {
-        Expression<?> target = null;
+        Expression<?> target;
 
         switch (property) {
             case "fileName":
@@ -103,19 +110,25 @@ public class FileCustomRepositoryImpl implements FileCustomRepository {
             case "description":
             case "size":
             case "userId":
+            case "createdAt":
+            case "updatedAt":
                 target = entityPath.get(property);
                 break;
+            default:
+                throw new CommonException(ErrorCode.SORT_KEY_NOT_EXISTS);
         }
         return target;
     }
 
     public Class<?> getType(String property) {
-        Class<?> type = null;
+        Class<?> type;
         switch (property) {
             case "id":
             case "fileName":
             case "description":
             case "size":
+            case "createdAt":
+            case "updatedAt":
                 type = file.getType();
                 break;
             case "fileCategory":
@@ -125,17 +138,21 @@ public class FileCustomRepositoryImpl implements FileCustomRepository {
             case "userId":
                 type = member.getType();
                 break;
+            default:
+                throw new CommonException(ErrorCode.SORT_KEY_NOT_EXISTS);
         }
         return type;
     }
 
     public PathMetadata getMetadata(String property) {
-        PathMetadata metadata = null;
+        PathMetadata metadata;
         switch (property) {
             case "id":
             case "fileName":
             case "description":
             case "size":
+            case "createdAt":
+            case "updatedAt":
                 metadata = file.getMetadata();
                 break;
             case "fileCategory":
@@ -145,12 +162,33 @@ public class FileCustomRepositoryImpl implements FileCustomRepository {
             case "userId":
                 metadata = member.getMetadata();
                 break;
+            default:
+                throw new CommonException(ErrorCode.SORT_KEY_NOT_EXISTS);
         }
         return metadata;
     }
 
-    private BooleanBuilder whereClause() {
+    private BooleanBuilder whereClause(Map<String,Object> filters) {
         BooleanBuilder builder = new BooleanBuilder();
+        LocalDate startDate = null;
+        LocalDate endDate = null;
+        for (String s : filters.keySet()) {
+            switch (s) {
+                case "fileName": // 파일 이름
+                    builder.and(file.originName.like("%" + filters.get(s) + "%")); // like %str% = contains와 동일
+                case "startDate":
+                    startDate = LocalDate.parse(filters.get(s) + "");
+                case "endDate":
+                    endDate = LocalDate.parse(filters.get(s) + "");
+            }
+        }
+
+        if(startDate != null && endDate != null) {
+            builder.and(file.createdAt.between(
+                    LocalDateTime.of(startDate, LocalTime.of(0,0)),
+                    LocalDateTime.of(endDate,LocalTime.of(23,59)))
+            );
+        }
 
         if (!SecurityContextHelper.isAdmin()) { // 일반회원 체크
             builder.and(member.userId.eq(SecurityContextHelper.getPrincipal().getUserId())); // 본인이 등록한 파일만 조회
