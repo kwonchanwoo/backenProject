@@ -2,6 +2,7 @@ package com.example.module.repository.member;
 
 
 import com.example.module.api.member.dto.response.ResponseMemberDto;
+import com.example.module.entity.FileCategory;
 import com.example.module.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,4 +21,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberCus
     Page<ResponseMemberDto> getMemberList(Map<String, Object> filters, Pageable pageable);
 
     List<Member> findByIdInAndDeletedFalse(Collection<Long> ids);
+
+    Optional<Member> findByIdAndDeletedFalse(Long id);
 }
