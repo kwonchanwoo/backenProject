@@ -23,7 +23,7 @@ public class BoardCommentService {
 
     public List<BoardCommentDto> getBoardCommentList(Board board) {
         return boardCommentRepository
-                .findByDeletedFalseAndBoardComment_BoardAndBoardComment_Board_DeletedFalseOrderBySortAsc(board)
+                .findByBoardAndBoardCommentNullOrderBySortAsc(board)// 메인 댓글 조회(메인 댓글은 부모값이 없음 parent_id가 null인것만 체크)
                 .stream()
                 .map(BoardCommentDto::new)
                 .collect(Collectors.toList());

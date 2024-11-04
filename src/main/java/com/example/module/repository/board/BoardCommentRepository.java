@@ -9,8 +9,7 @@ import java.util.Optional;
 
 public interface BoardCommentRepository extends JpaRepository<BoardComment, Long>,BoardCommentCustomRepository{
 
-    List<BoardComment> findByDeletedFalseAndBoardComment_BoardAndBoardComment_Board_DeletedFalseOrderBySortAsc(Board board);
-
     Optional<BoardComment> findFirstByBoardAndBoard_DeletedFalseAndBoardCommentAndDeletedFalseOrderBySortDesc(Board board, BoardComment boardComment);
 
+    List<BoardComment> findByBoardAndBoardCommentNullOrderBySortAsc(Board board);
 }

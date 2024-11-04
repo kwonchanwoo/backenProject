@@ -3,6 +3,7 @@ package com.example.module.api.board.controller;
 import com.example.module.api.board.dto.request.RequestBoardDto;
 import com.example.module.api.board.dto.response.ResponseBoardDto;
 import com.example.module.api.board.service.BoardService;
+import com.example.module.entity.Board;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,5 +27,16 @@ public class BoardController {
     @ResponseStatus(HttpStatus.CREATED)
     public void postBoard(@RequestBody RequestBoardDto requestBoardDto){
         boardService.postBoard(requestBoardDto);
+    }
+
+    @PatchMapping("{board}")
+    @ResponseStatus(HttpStatus.OK)
+    public void patchBoard(@PathVariable(name = "board") Board board, @RequestBody RequestBoardDto requestBoardDto){
+        boardService.patchBoard(board,requestBoardDto);
+    }
+
+    @GetMapping("{board}")
+    public ResponseBoardDto getBoardDetail(@PathVariable(name = "board") Board board){
+        return boardService.getBoardDetail(board);
     }
 }
