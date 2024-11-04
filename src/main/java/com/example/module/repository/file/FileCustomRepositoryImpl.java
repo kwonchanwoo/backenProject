@@ -26,6 +26,7 @@ import static com.example.module.entity.QFile.file;
 import static com.example.module.entity.QFileCategory.fileCategory;
 import static com.example.module.entity.QFileCategoryRole.fileCategoryRole;
 import static com.example.module.entity.QMember.member;
+import static com.example.module.util.querydsl.QueryDslUtils.filterSetting;
 
 @RequiredArgsConstructor
 public class FileCustomRepositoryImpl implements FileCustomRepository {
@@ -195,12 +196,6 @@ public class FileCustomRepositoryImpl implements FileCustomRepository {
             builder.and(fileCategoryRole.deleted.isFalse());// 파일 권한 여부 체크
         }
         return builder.and(file.deleted.isFalse()).and(fileCategory.deleted.isFalse());
-    }
-
-    private void filterSetting(Map<String, Object> filters) {
-        filters.remove("page");
-        filters.remove("size");
-        filters.remove("sort");
     }
 }
 

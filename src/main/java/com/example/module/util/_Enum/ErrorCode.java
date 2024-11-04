@@ -58,8 +58,12 @@ public enum ErrorCode {
     /**
      *  Sort 관련
      */
-    SORT_KEY_NOT_EXISTS(HttpStatus.BAD_REQUEST,400 ,"정렬 키값이 해당 엔터티에 존재하지않습니다." );
+    SORT_KEY_NOT_EXISTS(HttpStatus.BAD_REQUEST,400 ,"정렬 키값이 해당 엔터티에 존재하지않습니다." ),
 
+    /**
+     *  게시판 관련
+     */
+    BOARD_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,404,"해당 게시판 댓글을 찾을수없습니다.");
 
     private final HttpStatus httpStatus;
     private final Integer code;

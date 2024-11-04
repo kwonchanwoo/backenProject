@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static com.example.module.entity.QFileCategoryRole.fileCategoryRole;
 import static com.example.module.entity.QMember.member;
+import static com.example.module.util.querydsl.QueryDslUtils.filterSetting;
 
 @RequiredArgsConstructor
 public class MemberCustomRepositoryImpl implements MemberCustomRepository {
@@ -114,11 +115,5 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         });
 
         return orders;
-    }
-
-    private void filterSetting(Map<String, Object> filters) {
-        filters.remove("page");
-        filters.remove("size");
-        filters.remove("sort");
     }
 }

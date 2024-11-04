@@ -44,7 +44,7 @@ public class File extends BaseEntity {
     @Column(columnDefinition = "varchar(10) NOT NULL COMMENT '파일 확장자'")
     private String extension;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToOne
     @JoinColumn(name = "file_category_id")
     private FileCategory fileCategory;
 
